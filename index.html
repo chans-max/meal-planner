@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<title>오늘 뭐먹지 · 나만의 영양사</title>
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#4A85C9" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="오늘 뭐먹지" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="description" content="AI가 매일 맞춤 식단을 추천해주는 나만의 영양사" />
+
+<!-- Icons (SVG data URL inline for simplicity) -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%236FA8E6'/%3E%3Cstop offset='100%25' stop-color='%234A85C9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='22' fill='url(%23g)'/%3E%3Ctext x='50' y='68' font-size='56' text-anchor='middle'%3E🥗%3C/text%3E%3C/svg%3E" />
+<link rel="apple-touch-icon" href="icon-192.png" />
+
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+<style>
+  :root {
+    --bg: #F5F8FC;
+    --bg-soft: #EAF1FA;
+    --surface: #FFFFFF;
+    --primary: #6FA8E6;
+    --primary-deep: #4A85C9;
+    --primary-soft: #DCE9F7;
+    --accent: #FFB7A0;
+    --accent-soft: #FFE2D6;
+    --text: #1B2A3B;
+    --text-muted: #6A7A8C;
+    --text-light: #9AA8B8;
+    --border: #E3EBF4;
+    --success: #7BC4A4;
+    --warning: #F5C26B;
+    --danger: #E88B8B;
+    --radius-sm: 10px;
+    --radius: 16px;
+    --radius-lg: 24px;
+    --shadow-sm: 0 2px 8px rgba(74, 133, 201, 0.06);
+    --shadow: 0 8px 24px rgba(74, 133, 201, 0.08);
+    --shadow-lg: 0 20px 50px rgba(74, 133, 201, 0.12);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at 0% 0%, #E0EBF8 0%, transparent 40%),
+      radial-gradient(circle at 100% 100%, #FFE8DD 0%, transparent 45%),
+      var(--bg);
+  }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+  input, select, textarea { font-family: inherit; font-size: inherit; color: inherit; }
+
+  .app {
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100vh;
+    padding: 20px 18px 100px;
+    position: relative;
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 22px;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .logo-icon {
+    width: 36px; height: 36px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-deep));
+    display: grid; place-items: center;
+    color: white; font-weight: 700; font-size: 18px;
+    box-shadow: var(--shadow-sm);
+  }
+  .logo-text {
+    font-weight: 700;
+    font-size: 17px;
+    letter-spacing: -0.3px;
+  }
+  .logo-text small {
+    display: block;
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 500;
+    letter-spacing: 0;
+  }
+  .icon-btn {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    background: var(--surface);
+    display: grid; place-items: center;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.15s;
+  }
+  .icon-btn:active { transform: scale(0.92); }
+  .icon-btn svg { width: 18px; height: 18px; stroke: var(--text); }
+
+  /* Greeting */
+  .greeting {
+    margin-bottom: 18px;
+  }
+  .greeting h1 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    line-height: 1.3;
+  }
+  .greeting p {
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-top: 4px;
+  }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 5px;
+    margin-bottom: 18px;
+    box-shadow: var(--shadow-sm);
+    position: sticky;
+    top: 12px;
+    z-index: 50;
+  }
+  .tab {
+    flex: 1;
+    padding: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 12px;
+    color: var(--text-muted);
+    transition: all 0.2s;
+  }
+  .tab.active {
+    background: linear-gradient(135deg, var(--primary), var(--primary-deep));
+    color: white;
+    box-shadow: 0 4px 12px rgba(74, 133, 201, 0.3);
+  }
+
+  /* Card */
+  .card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 18px;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 14px;
+  }
+  .card-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .card-title h3 {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+  .card-title .badge {
+    font-size: 11px;
+    background: var(--primary-soft);
+    color: var(--primary-deep);
+    padding: 3px 8px;
+    border-radius: 8px;
+    font-weight: 600;
+  }
+
+  /* Goal banner */
+  .goal-banner {
+    background: linear-gradient(135deg, #5891D8 0%, #4A85C9 100%);
+    color: white;
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .goal-banner::before {
+    content: '';
+    position: absolute;
+    right: -30px; top: -30px;
+    width: 140px; height: 140px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
+  }
+  .goal-banner::after {
+    content: '';
+    position: absolute;
+    right: 30px; bottom: -50px;
+    width: 100px; height: 100px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 50%;
+  }
+  .goal-label {
+    font-size: 12px;
+    opacity: 0.85;
+    margin-bottom: 4px;
+    position: relative;
+    z-index: 1;
+  }
+  .goal-name {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 1;
+  }
+  .goal-stats {
+    display: flex;
+    gap: 14px;
+    position: relative;
+    z-index: 1;
+  }
+  .goal-stat {
+    flex: 1;
+    background: rgba(255,255,255,0.15);
+    border-radius: 10px;
+    padding: 8px 10px;
+    backdrop-filter: blur(10px);
+  }
+  .goal-stat-value {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+  .goal-stat-label {
+    font-size: 10px;
+    opacity: 0.85;
+    margin-top: 2px;
+  }
+
+  /* Meal */
+  .meal {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.15s;
+  }
+  .meal:active { transform: scale(0.98); }
+  .meal-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+  .meal-type {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .meal-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: grid; place-items: center;
+    font-size: 18px;
+  }
+  .meal-icon.breakfast { background: #FFF4E0; }
+  .meal-icon.lunch { background: #E3F2DC; }
+  .meal-icon.dinner { background: #E8E4F8; }
+  .meal-icon.snack { background: #FCE4EC; }
+  .meal-time {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  .meal-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .meal-cal {
+    text-align: right;
+  }
+  .meal-cal-num {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--primary-deep);
+  }
+  .meal-cal-unit {
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+  .meal-name {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    margin-bottom: 4px;
+  }
+  .meal-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+  .meal-macros {
+    display: flex;
+    gap: 8px;
+  }
+  .macro-tag {
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-weight: 600;
+    background: var(--bg-soft);
+    color: var(--text-muted);
+  }
+  .macro-tag span { color: var(--text); }
+
+  /* Buttons */
+  .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 14px 18px;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.15s;
+    width: 100%;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-deep));
+    color: white;
+    box-shadow: 0 4px 14px rgba(74, 133, 201, 0.3);
+  }
+  .btn-secondary {
+    background: var(--surface);
+    color: var(--primary-deep);
+    box-shadow: var(--shadow-sm);
+  }
+  .btn-ghost {
+    background: var(--bg-soft);
+    color: var(--text);
+  }
+  .btn-accent {
+    background: linear-gradient(135deg, var(--accent), #FF9978);
+    color: white;
+    box-shadow: 0 4px 14px rgba(255, 153, 120, 0.35);
+  }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn svg { width: 16px; height: 16px; }
+
+  /* Goal selection */
+  .goal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .goal-option {
+    background: var(--surface);
+    border: 2px solid transparent;
+    border-radius: var(--radius);
+    padding: 14px;
+    text-align: left;
+    transition: all 0.15s;
+    box-shadow: var(--shadow-sm);
+  }
+  .goal-option.active {
+    border-color: var(--primary);
+    background: var(--primary-soft);
+  }
+  .goal-option-emoji {
+    font-size: 24px;
+    margin-bottom: 6px;
+  }
+  .goal-option-name {
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 2px;
+  }
+  .goal-option-desc {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  /* Form */
+  .form-group {
+    margin-bottom: 14px;
+  }
+  .form-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+  .form-input, .form-select, .form-textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+    font-size: 14px;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+  .form-textarea { resize: none; min-height: 70px; }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  /* Shopping list */
+  .shop-category {
+    margin-bottom: 16px;
+  }
+  .shop-category-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--primary-deep);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .shop-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: var(--surface);
+    border-radius: 12px;
+    margin-bottom: 6px;
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .shop-item:active { transform: scale(0.98); }
+  .shop-item.done { opacity: 0.5; }
+  .shop-item.done .shop-name { text-decoration: line-through; }
+  .shop-check {
+    width: 22px; height: 22px;
+    border-radius: 7px;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    transition: all 0.15s;
+  }
+  .shop-item.done .shop-check {
+    background: var(--primary);
+    border-color: var(--primary);
+  }
+  .shop-check svg {
+    width: 12px; height: 12px;
+    stroke: white;
+    stroke-width: 3;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .shop-item.done .shop-check svg { opacity: 1; }
+  .shop-name { font-size: 14px; font-weight: 500; flex: 1; }
+  .shop-qty { font-size: 12px; color: var(--text-muted); }
+
+  /* Recipe modal */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(27, 42, 59, 0.5);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+    display: none;
+    align-items: flex-end;
+    animation: fadeIn 0.2s;
+  }
+  .modal-overlay.active { display: flex; }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .modal {
+    background: var(--bg);
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    border-radius: 24px 24px 0 0;
+    max-height: 88vh;
+    overflow-y: auto;
+    animation: slideUp 0.25s ease-out;
+    padding: 20px;
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  .modal-handle {
+    width: 36px; height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin: 0 auto 16px;
+  }
+  .modal-close {
+    position: absolute;
+    right: 20px; top: 24px;
+    width: 32px; height: 32px;
+    border-radius: 10px;
+    background: var(--surface);
+    display: grid;
+    place-items: center;
+    box-shadow: var(--shadow-sm);
+  }
+  .modal-close svg { width: 14px; height: 14px; }
+  .recipe-hero {
+    background: linear-gradient(135deg, var(--primary-soft), #F5E8DF);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+  .recipe-emoji { font-size: 48px; margin-bottom: 8px; }
+  .recipe-title { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 4px; }
+  .recipe-meta { font-size: 12px; color: var(--text-muted); }
+  .recipe-section {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .recipe-section h4 {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--primary-deep);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .recipe-ingredients li,
+  .recipe-steps li {
+    font-size: 13px;
+    padding: 6px 0;
+    list-style: none;
+    display: flex;
+    gap: 10px;
+    line-height: 1.55;
+  }
+  .recipe-ingredients li::before {
+    content: '•';
+    color: var(--primary);
+    font-weight: 700;
+  }
+  .recipe-steps {
+    counter-reset: step;
+  }
+  .recipe-steps li {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .recipe-steps li:last-child { border-bottom: none; }
+  .recipe-steps li::before {
+    counter-increment: step;
+    content: counter(step);
+    background: var(--primary);
+    color: white;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .nutri-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  .nutri-item {
+    background: var(--bg-soft);
+    border-radius: 10px;
+    padding: 10px 6px;
+    text-align: center;
+  }
+  .nutri-val { font-size: 14px; font-weight: 700; color: var(--primary-deep); }
+  .nutri-lbl { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+
+  /* History */
+  .history-item {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 14px;
+    margin-bottom: 10px;
+    box-shadow: var(--shadow-sm);
+  }
+  .history-date {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--primary-deep);
+    margin-bottom: 8px;
+  }
+  .history-meals {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .history-pill {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 10px;
+    background: var(--bg-soft);
+    color: var(--text-muted);
+  }
+  .history-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  /* Empty state */
+  .empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+  }
+  .empty-emoji { font-size: 48px; margin-bottom: 12px; }
+  .empty p { font-size: 13px; line-height: 1.6; }
+
+  /* Loading */
+  .loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 40px 20px;
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+  .spinner {
+    width: 20px; height: 20px;
+    border: 2.5px solid var(--primary-soft);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--text);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: var(--shadow-lg);
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
+    z-index: 200;
+    pointer-events: none;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-4px);
+  }
+
+  /* API key prompt */
+  .api-prompt {
+    background: linear-gradient(135deg, #FFF4E0 0%, #FFE2D6 100%);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 14px;
+    border: 1px solid #FCD9B6;
+  }
+  .api-prompt-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #B36A2A;
+    margin-bottom: 6px;
+  }
+  .api-prompt-desc {
+    font-size: 12px;
+    color: #8B5A2C;
+    line-height: 1.55;
+    margin-bottom: 10px;
+  }
+  .api-prompt a {
+    color: #B36A2A;
+    font-weight: 600;
+    text-decoration: underline;
+  }
+
+  /* Floating action */
+  .fab {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 444px;
+    width: calc(100% - 36px);
+    z-index: 60;
+  }
+  .fab .btn {
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* Hidden */
+  .hidden { display: none !important; }
+
+  /* Stagger animation */
+  .stagger > * {
+    opacity: 0;
+    animation: slideInUp 0.4s ease-out forwards;
+  }
+  .stagger > *:nth-child(1) { animation-delay: 0.05s; }
+  .stagger > *:nth-child(2) { animation-delay: 0.12s; }
+  .stagger > *:nth-child(3) { animation-delay: 0.19s; }
+  .stagger > *:nth-child(4) { animation-delay: 0.26s; }
+  .stagger > *:nth-child(5) { animation-delay: 0.33s; }
+  @keyframes slideInUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="header">
+    <div class="logo">
+      <div class="logo-icon">🥗</div>
+      <div class="logo-text">
+        오늘 뭐먹지
+        <small>나만의 영양사</small>
+      </div>
+    </div>
+    <button class="icon-btn" onclick="showSettings()" aria-label="설정">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"></circle>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+      </svg>
+    </button>
+  </header>
+
+  <div class="greeting">
+    <h1 id="greeting-text">오늘도 잘 챙겨먹어요</h1>
+    <p id="greeting-sub">목표에 맞춰 식단을 준비해드릴게요</p>
+  </div>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="today">오늘</button>
+    <button class="tab" data-tab="shopping">장보기</button>
+    <button class="tab" data-tab="history">기록</button>
+    <button class="tab" data-tab="goal">목표</button>
+  </nav>
+
+  <!-- TAB: TODAY -->
+  <section id="tab-today" class="tab-content">
+    <div id="api-prompt-area"></div>
+    <div id="goal-banner-area"></div>
+    <div id="meal-list-area"></div>
+  </section>
+
+  <!-- TAB: SHOPPING -->
+  <section id="tab-shopping" class="tab-content hidden">
+    <div id="shopping-list-area"></div>
+  </section>
+
+  <!-- TAB: HISTORY -->
+  <section id="tab-history" class="tab-content hidden">
+    <div id="history-area"></div>
+  </section>
+
+  <!-- TAB: GOAL -->
+  <section id="tab-goal" class="tab-content hidden">
+    <div class="card">
+      <div class="card-title">
+        <h3>식단 목표</h3>
+      </div>
+      <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px;line-height:1.55;">
+        목표에 맞춰 매일 식단을 추천해드려요
+      </p>
+      <div class="goal-grid" id="goal-grid"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><h3>내 정보</h3></div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">나이</label>
+          <input type="number" class="form-input" id="profile-age" placeholder="30" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">성별</label>
+          <select class="form-select" id="profile-gender">
+            <option value="">선택</option>
+            <option value="male">남</option>
+            <option value="female">여</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">키 (cm)</label>
+          <input type="number" class="form-input" id="profile-height" placeholder="170" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">몸무게 (kg)</label>
+          <input type="number" class="form-input" id="profile-weight" placeholder="65" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">활동량</label>
+        <select class="form-select" id="profile-activity">
+          <option value="sedentary">거의 안움직임 (사무직)</option>
+          <option value="light" selected>가벼운 활동 (주 1-3회 운동)</option>
+          <option value="moderate">보통 활동 (주 3-5회 운동)</option>
+          <option value="active">활발한 활동 (주 6-7회 운동)</option>
+          <option value="very_active">매우 활발 (격렬한 운동)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">알레르기 · 못먹는 음식 (선택)</label>
+        <input type="text" class="form-input" id="profile-allergy" placeholder="예: 새우, 견과류" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">선호 음식 스타일 (선택)</label>
+        <input type="text" class="form-input" id="profile-style" placeholder="예: 한식 위주, 간단한거 좋아함" />
+      </div>
+      <button class="btn btn-primary" onclick="saveProfile()">저장하기</button>
+    </div>
+  </section>
+
+  <div class="fab" id="fab"></div>
+
+</div>
+
+<!-- Modals -->
+<div class="modal-overlay" id="modal-recipe">
+  <div class="modal" id="modal-recipe-content"></div>
+</div>
+
+<div class="modal-overlay" id="modal-settings">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h2 style="font-size:20px;font-weight:700;margin-bottom:6px;letter-spacing:-0.5px;">설정</h2>
+    <p style="font-size:12px;color:var(--text-muted);margin-bottom:18px;">Gemini API 키를 등록하면 AI 식단 추천이 켜져요</p>
+
+    <div class="card">
+      <div class="card-title"><h3>Gemini API 키</h3></div>
+      <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px;line-height:1.55;">
+        <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--primary-deep);font-weight:600;">Google AI Studio</a>에서 무료로 발급받을 수 있어요. 키는 이 브라우저에만 저장돼요.
+      </p>
+      <input type="password" class="form-input" id="api-key-input" placeholder="AIza..." style="margin-bottom:10px;" />
+      <button class="btn btn-primary" onclick="saveApiKey()">저장</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><h3>데이터 관리</h3></div>
+      <button class="btn btn-ghost" onclick="exportData()" style="margin-bottom:8px;">데이터 백업 (JSON)</button>
+      <button class="btn btn-ghost" onclick="clearData()" style="color:var(--danger);">모든 데이터 초기화</button>
+    </div>
+
+    <button class="btn btn-secondary" onclick="closeModal('modal-settings')" style="margin-top:10px;">닫기</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// State management
+// ============================================================
+const STORE_KEY = 'nutritionist_v1';
+const state = {
+  apiKey: '',
+  profile: {
+    age: '', gender: '', height: '', weight: '',
+    activity: 'light', allergy: '', style: ''
+  },
+  goal: 'maintain',
+  todayPlan: null,
+  shoppingList: [],
+  history: [],
+};
+
+const GOALS = [
+  { id: 'bulkup', emoji: '💪', name: '벌크업', desc: '근육 증가, 칼로리 +' },
+  { id: 'cut',    emoji: '🔥', name: '체중 감량', desc: '지방 감소, 칼로리 -' },
+  { id: 'maintain', emoji: '⚖️', name: '체중 유지', desc: '건강한 균형식' },
+  { id: 'destress', emoji: '🌿', name: '스트레스 해소', desc: '편안한 한끼' },
+  { id: 'energy',  emoji: '⚡', name: '에너지 충전', desc: '활력 + 집중력' },
+  { id: 'gut',     emoji: '🌾', name: '장 건강', desc: '소화·식이섬유' },
+];
+
+function load() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (raw) Object.assign(state, JSON.parse(raw));
+  } catch (e) {}
+}
+function save() {
+  localStorage.setItem(STORE_KEY, JSON.stringify(state));
+}
+
+// ============================================================
+// Utilities
+// ============================================================
+function $(sel) { return document.querySelector(sel); }
+function $$(sel) { return document.querySelectorAll(sel); }
+function toast(msg) {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+function todayStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function todayLabel() {
+  const days = ['일','월','화','수','목','금','토'];
+  const d = new Date();
+  return `${d.getMonth()+1}월 ${d.getDate()}일 ${days[d.getDay()]}요일`;
+}
+
+// ============================================================
+// Calorie target calculation (Mifflin-St Jeor)
+// ============================================================
+function calcTargetCalories() {
+  const { age, gender, height, weight, activity } = state.profile;
+  if (!age || !height || !weight) return null;
+
+  let bmr;
+  if (gender === 'female') {
+    bmr = 10 * weight + 6.25 * height - 5 * age - 161;
+  } else {
+    bmr = 10 * weight + 6.25 * height - 5 * age + 5;
+  }
+  const mult = { sedentary: 1.2, light: 1.375, moderate: 1.55, active: 1.725, very_active: 1.9 };
+  let tdee = bmr * (mult[activity] || 1.375);
+
+  const adj = { bulkup: 1.15, cut: 0.8, maintain: 1.0, destress: 1.0, energy: 1.05, gut: 1.0 };
+  tdee *= (adj[state.goal] || 1.0);
+
+  return Math.round(tdee);
+}
+
+function calcMacros(cal) {
+  const ratios = {
+    bulkup:   { p: 0.30, c: 0.45, f: 0.25 },
+    cut:      { p: 0.35, c: 0.35, f: 0.30 },
+    maintain: { p: 0.25, c: 0.50, f: 0.25 },
+    destress: { p: 0.20, c: 0.55, f: 0.25 },
+    energy:   { p: 0.25, c: 0.55, f: 0.20 },
+    gut:      { p: 0.20, c: 0.55, f: 0.25 },
+  };
+  const r = ratios[state.goal] || ratios.maintain;
+  return {
+    protein: Math.round(cal * r.p / 4),
+    carb:    Math.round(cal * r.c / 4),
+    fat:     Math.round(cal * r.f / 9),
+  };
+}
+
+// ============================================================
+// Render
+// ============================================================
+function renderGreeting() {
+  const h = new Date().getHours();
+  let greet;
+  if (h < 11) greet = '좋은 아침이에요 ☀️';
+  else if (h < 14) greet = '점심시간이네요 🍽';
+  else if (h < 18) greet = '오후도 화이팅이에요';
+  else greet = '오늘도 수고했어요 🌙';
+  $('#greeting-text').textContent = greet;
+  $('#greeting-sub').textContent = todayLabel();
+}
+
+function renderApiPrompt() {
+  const area = $('#api-prompt-area');
+  if (!state.apiKey) {
+    area.innerHTML = `
+      <div class="api-prompt">
+        <div class="api-prompt-title">🔑 시작하려면 API 키가 필요해요</div>
+        <div class="api-prompt-desc">
+          Gemini API는 <strong>무료</strong>로 발급받을 수 있어요. <a href="https://aistudio.google.com/apikey" target="_blank">여기서 발급</a>받고 우측 상단 ⚙️ 설정에서 등록해주세요.
+        </div>
+        <button class="btn btn-primary" onclick="showSettings()" style="width:auto;padding:10px 16px;font-size:13px;">설정 열기</button>
+      </div>
+    `;
+  } else {
+    area.innerHTML = '';
+  }
+}
+
+function renderGoalBanner() {
+  const area = $('#goal-banner-area');
+  const goal = GOALS.find(g => g.id === state.goal);
+  const cal = calcTargetCalories();
+  if (!cal) {
+    area.innerHTML = `
+      <div class="card">
+        <div class="card-title"><h3>먼저 내 정보를 알려주세요</h3></div>
+        <p style="font-size:13px;color:var(--text-muted);line-height:1.55;margin-bottom:12px;">
+          나이·키·몸무게를 입력하면 목표에 맞는 칼로리를 계산해드려요
+        </p>
+        <button class="btn btn-primary" onclick="switchTab('goal')">정보 입력하기</button>
+      </div>
+    `;
+    return;
+  }
+  const m = calcMacros(cal);
+  area.innerHTML = `
+    <div class="goal-banner">
+      <div class="goal-label">${goal.emoji} 오늘의 목표 · ${goal.name}</div>
+      <div class="goal-name">${cal} kcal</div>
+      <div class="goal-stats">
+        <div class="goal-stat">
+          <div class="goal-stat-value">${m.protein}g</div>
+          <div class="goal-stat-label">단백질</div>
+        </div>
+        <div class="goal-stat">
+          <div class="goal-stat-value">${m.carb}g</div>
+          <div class="goal-stat-label">탄수화물</div>
+        </div>
+        <div class="goal-stat">
+          <div class="goal-stat-value">${m.fat}g</div>
+          <div class="goal-stat-label">지방</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderMeals() {
+  const area = $('#meal-list-area');
+  const cal = calcTargetCalories();
+
+  if (!state.apiKey) {
+    area.innerHTML = '';
+    renderFab(null);
+    return;
+  }
+  if (!cal) {
+    area.innerHTML = '';
+    renderFab(null);
+    return;
+  }
+
+  if (!state.todayPlan || state.todayPlan.date !== todayStr()) {
+    area.innerHTML = `
+      <div class="empty">
+        <div class="empty-emoji">🍽</div>
+        <p>오늘의 식단이 아직 없어요<br />아래 버튼을 눌러 받아보세요</p>
+      </div>
+    `;
+    renderFab('generate');
+    return;
+  }
+
+  const icons = {
+    breakfast: { emoji: '🍳', label: '아침', time: '07:00 – 09:00', cls: 'breakfast' },
+    lunch:     { emoji: '🥗', label: '점심', time: '12:00 – 13:30', cls: 'lunch' },
+    dinner:    { emoji: '🍲', label: '저녁', time: '18:00 – 19:30', cls: 'dinner' },
+    snack:     { emoji: '🥤', label: '간식', time: '15:00 – 16:00', cls: 'snack' },
+  };
+
+  const html = state.todayPlan.meals.map((m, i) => {
+    const ic = icons[m.type] || icons.snack;
+    return `
+      <div class="meal" onclick="openRecipe(${i})">
+        <div class="meal-head">
+          <div class="meal-type">
+            <div class="meal-icon ${ic.cls}">${ic.emoji}</div>
+            <div>
+              <div class="meal-label">${ic.label}</div>
+              <div class="meal-time">${ic.time}</div>
+            </div>
+          </div>
+          <div class="meal-cal">
+            <div class="meal-cal-num">${m.calories}</div>
+            <div class="meal-cal-unit">kcal</div>
+          </div>
+        </div>
+        <div class="meal-name">${m.name}</div>
+        <div class="meal-desc">${m.description || ''}</div>
+        <div class="meal-macros">
+          <div class="macro-tag">P <span>${m.protein}g</span></div>
+          <div class="macro-tag">C <span>${m.carb}g</span></div>
+          <div class="macro-tag">F <span>${m.fat}g</span></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  area.innerHTML = `<div class="stagger">${html}</div>`;
+  renderFab('regenerate');
+}
+
+function renderFab(action) {
+  const fab = $('#fab');
+  if (action === 'generate') {
+    fab.innerHTML = `<button class="btn btn-primary" onclick="generatePlan()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L15 9L22 9L17 14L19 21L12 17L5 21L7 14L2 9L9 9Z"/></svg>
+      AI 식단 받기
+    </button>`;
+  } else if (action === 'regenerate') {
+    fab.innerHTML = `<button class="btn btn-primary" onclick="generatePlan()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+      새로 추천받기
+    </button>`;
+  } else {
+    fab.innerHTML = '';
+  }
+}
+
+function renderShopping() {
+  const area = $('#shopping-list-area');
+  if (!state.shoppingList || state.shoppingList.length === 0) {
+    area.innerHTML = `
+      <div class="empty">
+        <div class="empty-emoji">🛒</div>
+        <p>장보기 목록이 비어있어요<br />오늘의 식단을 받으면<br />필요한 재료가 자동으로 정리돼요</p>
+      </div>
+    `;
+    return;
+  }
+  const grouped = {};
+  state.shoppingList.forEach(item => {
+    const cat = item.category || '기타';
+    if (!grouped[cat]) grouped[cat] = [];
+    grouped[cat].push(item);
+  });
+
+  const checkSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+
+  area.innerHTML = Object.entries(grouped).map(([cat, items]) => `
+    <div class="shop-category">
+      <div class="shop-category-name">${cat}</div>
+      ${items.map((item, idx) => {
+        const realIdx = state.shoppingList.indexOf(item);
+        return `
+          <div class="shop-item ${item.done ? 'done' : ''}" onclick="toggleShopItem(${realIdx})">
+            <div class="shop-check">${checkSvg}</div>
+            <div class="shop-name">${item.name}</div>
+            <div class="shop-qty">${item.qty || ''}</div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `).join('') + `
+    <button class="btn btn-ghost" onclick="clearShopping()" style="margin-top:14px;">목록 비우기</button>
+  `;
+}
+
+function toggleShopItem(idx) {
+  state.shoppingList[idx].done = !state.shoppingList[idx].done;
+  save();
+  renderShopping();
+}
+
+function clearShopping() {
+  if (confirm('장보기 목록을 모두 비울까요?')) {
+    state.shoppingList = [];
+    save();
+    renderShopping();
+  }
+}
+
+function renderHistory() {
+  const area = $('#history-area');
+  if (!state.history || state.history.length === 0) {
+    area.innerHTML = `
+      <div class="empty">
+        <div class="empty-emoji">📝</div>
+        <p>아직 기록이 없어요<br />매일 받은 식단이 자동으로<br />기록에 남아요</p>
+      </div>
+    `;
+    return;
+  }
+  area.innerHTML = state.history.slice().reverse().map(h => {
+    const totalCal = h.meals.reduce((s,m) => s + (m.calories||0), 0);
+    const totalP = h.meals.reduce((s,m) => s + (m.protein||0), 0);
+    return `
+      <div class="history-item">
+        <div class="history-date">${h.date} · ${h.goalName || ''}</div>
+        <div class="history-meals">
+          ${h.meals.map(m => `<div class="history-pill">${m.name}</div>`).join('')}
+        </div>
+        <div class="history-stats">
+          <span>총 ${totalCal} kcal</span>
+          <span>단백질 ${totalP}g</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderGoalGrid() {
+  const grid = $('#goal-grid');
+  grid.innerHTML = GOALS.map(g => `
+    <button class="goal-option ${state.goal === g.id ? 'active' : ''}" onclick="selectGoal('${g.id}')">
+      <div class="goal-option-emoji">${g.emoji}</div>
+      <div class="goal-option-name">${g.name}</div>
+      <div class="goal-option-desc">${g.desc}</div>
+    </button>
+  `).join('');
+}
+
+function renderProfile() {
+  $('#profile-age').value = state.profile.age || '';
+  $('#profile-gender').value = state.profile.gender || '';
+  $('#profile-height').value = state.profile.height || '';
+  $('#profile-weight').value = state.profile.weight || '';
+  $('#profile-activity').value = state.profile.activity || 'light';
+  $('#profile-allergy').value = state.profile.allergy || '';
+  $('#profile-style').value = state.profile.style || '';
+}
+
+// ============================================================
+// Tabs
+// ============================================================
+function switchTab(name) {
+  $$('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+  $$('.tab-content').forEach(c => c.classList.add('hidden'));
+  $(`#tab-${name}`).classList.remove('hidden');
+
+  if (name === 'today') { renderApiPrompt(); renderGoalBanner(); renderMeals(); }
+  if (name === 'shopping') { renderShopping(); $('#fab').innerHTML = ''; }
+  if (name === 'history')  { renderHistory(); $('#fab').innerHTML = ''; }
+  if (name === 'goal')     { renderGoalGrid(); renderProfile(); $('#fab').innerHTML = ''; }
+}
+
+$$('.tab').forEach(tab => {
+  tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+});
+
+// ============================================================
+// Goal & profile
+// ============================================================
+function selectGoal(id) {
+  state.goal = id;
+  save();
+  renderGoalGrid();
+  toast('목표가 변경되었어요');
+}
+
+function saveProfile() {
+  state.profile = {
+    age: $('#profile-age').value,
+    gender: $('#profile-gender').value,
+    height: $('#profile-height').value,
+    weight: $('#profile-weight').value,
+    activity: $('#profile-activity').value,
+    allergy: $('#profile-allergy').value,
+    style: $('#profile-style').value,
+  };
+  save();
+  toast('저장됐어요');
+}
+
+// ============================================================
+// Settings modal
+// ============================================================
+function showSettings() {
+  $('#api-key-input').value = state.apiKey || '';
+  openModal('modal-settings');
+}
+function saveApiKey() {
+  const v = $('#api-key-input').value.trim();
+  if (!v) { toast('API 키를 입력해주세요'); return; }
+  state.apiKey = v;
+  save();
+  toast('API 키가 저장됐어요 ✨');
+  closeModal('modal-settings');
+  renderApiPrompt();
+}
+function clearData() {
+  if (confirm('모든 데이터를 삭제할까요? (API 키, 목표, 기록 전부)')) {
+    localStorage.removeItem(STORE_KEY);
+    location.reload();
+  }
+}
+function exportData() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `nutritionist-backup-${todayStr()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('백업 파일이 다운로드됐어요');
+}
+
+function openModal(id) {
+  $(`#${id}`).classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(id) {
+  $(`#${id}`).classList.remove('active');
+  document.body.style.overflow = '';
+}
+$$('.modal-overlay').forEach(o => {
+  o.addEventListener('click', (e) => {
+    if (e.target === o) closeModal(o.id);
+  });
+});
+
+// ============================================================
+// Recipe modal
+// ============================================================
+function openRecipe(idx) {
+  const m = state.todayPlan.meals[idx];
+  if (!m) return;
+  const content = $('#modal-recipe-content');
+  const emojis = { breakfast: '🍳', lunch: '🥗', dinner: '🍲', snack: '🥤' };
+  content.innerHTML = `
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeModal('modal-recipe')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="recipe-hero">
+      <div class="recipe-emoji">${emojis[m.type] || '🍴'}</div>
+      <div class="recipe-title">${m.name}</div>
+      <div class="recipe-meta">조리시간 약 ${m.cookTime || 15}분 · ${m.servings || 1}인분</div>
+    </div>
+
+    <div class="recipe-section">
+      <h4>📊 영양 정보</h4>
+      <div class="nutri-grid">
+        <div class="nutri-item"><div class="nutri-val">${m.calories}</div><div class="nutri-lbl">kcal</div></div>
+        <div class="nutri-item"><div class="nutri-val">${m.protein}g</div><div class="nutri-lbl">단백질</div></div>
+        <div class="nutri-item"><div class="nutri-val">${m.carb}g</div><div class="nutri-lbl">탄수화물</div></div>
+        <div class="nutri-item"><div class="nutri-val">${m.fat}g</div><div class="nutri-lbl">지방</div></div>
+      </div>
+    </div>
+
+    <div class="recipe-section">
+      <h4>🛒 재료</h4>
+      <ul class="recipe-ingredients">
+        ${(m.ingredients || []).map(i => `<li>${i.name} <span style="color:var(--text-muted);margin-left:auto;">${i.qty || ''}</span></li>`).join('')}
+      </ul>
+    </div>
+
+    <div class="recipe-section">
+      <h4>👨‍🍳 만드는 법</h4>
+      <ol class="recipe-steps">
+        ${(m.steps || []).map(s => `<li>${s}</li>`).join('')}
+      </ol>
+    </div>
+
+    ${m.tip ? `
+      <div class="recipe-section" style="background:linear-gradient(135deg,#FFF4E0,#FFE2D6);">
+        <h4 style="color:#B36A2A;">💡 영양사의 한마디</h4>
+        <p style="font-size:13px;line-height:1.6;color:#8B5A2C;">${m.tip}</p>
+      </div>
+    ` : ''}
+  `;
+  openModal('modal-recipe');
+}
+
+// ============================================================
+// AI generation (Gemini)
+// ============================================================
+async function generatePlan() {
+  if (!state.apiKey) {
+    toast('먼저 API 키를 등록해주세요');
+    showSettings();
+    return;
+  }
+  const cal = calcTargetCalories();
+  if (!cal) {
+    toast('내 정보를 먼저 입력해주세요');
+    switchTab('goal');
+    return;
+  }
+
+  $('#meal-list-area').innerHTML = `
+    <div class="loading">
+      <div class="spinner"></div>
+      <span>오늘의 식단을 짜고 있어요...</span>
+    </div>
+  `;
+  $('#fab').innerHTML = '';
+
+  const macros = calcMacros(cal);
+  const goal = GOALS.find(g => g.id === state.goal);
+  const recent = state.history.slice(-3).map(h =>
+    h.meals.map(m => m.name).join(', ')
+  ).join(' / ');
+
+  const prompt = `너는 친절하고 전문적인 한국인 영양사야. 사용자에게 오늘 하루치 식단을 짜줘.
+
+[사용자 정보]
+- 나이: ${state.profile.age}세, 성별: ${state.profile.gender === 'female' ? '여성' : '남성'}
+- 키: ${state.profile.height}cm, 몸무게: ${state.profile.weight}kg
+- 활동량: ${state.profile.activity}
+- 알레르기/못먹는 음식: ${state.profile.allergy || '없음'}
+- 선호 스타일: ${state.profile.style || '특별한 선호 없음'}
+
+[오늘의 목표]
+- ${goal.name} (${goal.desc})
+- 목표 칼로리: ${cal} kcal
+- 단백질 ${macros.protein}g / 탄수화물 ${macros.carb}g / 지방 ${macros.fat}g
+
+[최근 식단 (중복 피하기)]
+${recent || '없음'}
+
+[요청]
+- 아침, 점심, 저녁 3끼 + 간식 1개 (간식은 칼로리에 따라 생략 가능)
+- 한국인이 실제로 먹을 만한, 만들기 쉬운 메뉴 위주
+- 각 끼니마다 이름, 간단 설명, 칼로리, 단백질/탄수화물/지방(g), 재료 목록(이름+양), 조리 단계(3~5개), 영양사 팁
+- 한 줄짜리 영양사 팁은 따뜻하게, 왜 이 음식이 좋은지 설명
+- 응답은 반드시 아래 JSON 형식으로만, 다른 텍스트나 마크다운 코드블록 없이.
+
+{
+  "meals": [
+    {
+      "type": "breakfast",
+      "name": "메뉴 이름",
+      "description": "한 줄 설명",
+      "calories": 숫자,
+      "protein": 숫자,
+      "carb": 숫자,
+      "fat": 숫자,
+      "cookTime": 숫자(분),
+      "servings": 1,
+      "ingredients": [{"name":"재료명","qty":"수량","category":"카테고리"}],
+      "steps": ["단계1","단계2","..."],
+      "tip": "영양사 한 줄 팁"
+    }
+  ]
+}
+
+카테고리는 "채소/과일", "육류/생선", "곡류/면", "유제품/계란", "양념/조미료", "기타" 중 하나로.`;
+
+  try {
+    const models = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
+    let data = null;
+    let lastError = null;
+    let usedModel = null;
+
+    for (const model of models) {
+      try {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${state.apiKey}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: {
+              temperature: 0.85,
+              responseMimeType: "application/json"
+            }
+          })
+        });
+
+        if (!res.ok) {
+          const errText = await res.text();
+          lastError = `[${model}] HTTP ${res.status}: ${errText.slice(0, 300)}`;
+          console.warn(lastError);
+          continue;
+        }
+
+        data = await res.json();
+        usedModel = model;
+        console.log(`✓ 사용 모델: ${model}`);
+        break;
+      } catch (e) {
+        lastError = `[${model}] ${e.message}`;
+        console.warn(lastError);
+        continue;
+      }
+    }
+
+    if (!data) {
+      throw new Error(lastError || '모든 모델 호출 실패. API 키와 네트워크를 확인해주세요.');
+    }
+
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!text) throw new Error('AI 응답이 비어있어요');
+
+    let parsed;
+    try {
+      parsed = JSON.parse(text);
+    } catch (e) {
+      // try to extract JSON from text
+      const m = text.match(/\{[\s\S]*\}/);
+      if (m) parsed = JSON.parse(m[0]);
+      else throw new Error('AI 응답 파싱 실패');
+    }
+
+    if (!parsed.meals || !Array.isArray(parsed.meals)) {
+      throw new Error('식단 형식이 잘못됐어요');
+    }
+
+    state.todayPlan = {
+      date: todayStr(),
+      goal: state.goal,
+      goalName: goal.name,
+      meals: parsed.meals,
+    };
+
+    // Build shopping list
+    rebuildShoppingList(parsed.meals);
+
+    // Save to history (replace if same date)
+    const existIdx = state.history.findIndex(h => h.date === todayStr());
+    const historyEntry = {
+      date: todayStr(),
+      goal: state.goal,
+      goalName: goal.name,
+      meals: parsed.meals.map(m => ({
+        name: m.name,
+        calories: m.calories,
+        protein: m.protein,
+        carb: m.carb,
+        fat: m.fat,
+      })),
+    };
+    if (existIdx >= 0) state.history[existIdx] = historyEntry;
+    else state.history.push(historyEntry);
+    if (state.history.length > 60) state.history = state.history.slice(-60);
+
+    save();
+    renderMeals();
+    toast('오늘의 식단이 준비됐어요 ✨');
+
+  } catch (err) {
+    console.error(err);
+    renderMeals();
+    toast('생성 실패: ' + (err.message || '다시 시도해주세요'));
+  }
+}
+
+function rebuildShoppingList(meals) {
+  // Merge with existing (preserve done state of already-bought items)
+  const existing = state.shoppingList || [];
+  const newItems = [];
+
+  meals.forEach(meal => {
+    (meal.ingredients || []).forEach(ing => {
+      const key = (ing.name || '').trim();
+      if (!key) return;
+      const found = newItems.find(x => x.name === key);
+      if (found) {
+        // append qty
+        if (ing.qty && !found.qty.includes(ing.qty)) {
+          found.qty = `${found.qty}, ${ing.qty}`;
+        }
+      } else {
+        const prev = existing.find(x => x.name === key);
+        newItems.push({
+          name: key,
+          qty: ing.qty || '',
+          category: ing.category || '기타',
+          done: prev ? prev.done : false,
+        });
+      }
+    });
+  });
+
+  state.shoppingList = newItems;
+}
+
+// ============================================================
+// Init
+// ============================================================
+load();
+renderGreeting();
+renderApiPrompt();
+renderGoalBanner();
+renderMeals();
+
+// ============================================================
+// Service Worker registration (PWA)
+// ============================================================
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(reg => console.log('SW registered:', reg.scope))
+      .catch(err => console.log('SW registration failed:', err));
+  });
+}
+</script>
+</body>
+</html>
