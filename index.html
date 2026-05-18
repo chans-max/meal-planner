@@ -879,6 +879,355 @@
     box-shadow: var(--shadow-lg);
   }
 
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 55;
+    margin: -16px -18px 18px;
+    padding: 14px 18px 12px;
+    background: rgba(249, 249, 249, 0.86);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(190, 202, 185, 0.55);
+  }
+  .logo-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #94f990, #4caf50);
+    box-shadow: none;
+  }
+  .icon-btn {
+    background: var(--surface);
+    border-color: rgba(190, 202, 185, 0.7);
+    box-shadow: none;
+  }
+  .tabs {
+    background: rgba(255,255,255,0.92);
+    border-color: rgba(190, 202, 185, 0.65);
+    box-shadow: 0 -10px 30px rgba(0,0,0,0.08);
+    border-radius: 24px;
+  }
+  .tab.active {
+    background: #4caf50;
+    color: white;
+    box-shadow: none;
+  }
+  .section-head {
+    margin-top: 24px;
+  }
+  .card,
+  .meal,
+  .history-item,
+  .shop-item,
+  .recipe-section {
+    background: #ffffff;
+    border-color: rgba(190, 202, 185, 0.55);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.04);
+  }
+  .goal-banner {
+    background: linear-gradient(145deg, #ffffff, #f4fbf2);
+    color: var(--text);
+    border: 1px solid rgba(190, 202, 185, 0.58);
+    box-shadow: 0 16px 24px rgba(0,0,0,0.05);
+  }
+  .goal-banner::before,
+  .goal-banner::after {
+    display: none;
+  }
+  .goal-label,
+  .goal-copy {
+    color: var(--text-muted);
+    opacity: 1;
+  }
+  .goal-name {
+    color: var(--text);
+  }
+  .goal-orb {
+    background: rgba(76, 175, 80, 0.12);
+    border-color: rgba(76, 175, 80, 0.15);
+  }
+  .goal-stats {
+    gap: 12px;
+  }
+  .goal-stat {
+    background: var(--surface);
+    border: 1px solid rgba(190, 202, 185, 0.55);
+  }
+  .goal-stat-label {
+    color: var(--text-muted);
+  }
+  .spotlight-grid {
+    grid-template-columns: 1.3fr 1fr;
+    margin-bottom: 20px;
+  }
+  .spotlight-card {
+    min-height: 0;
+    border-radius: 22px;
+  }
+  .spotlight-card.primary {
+    background: linear-gradient(145deg, #ffffff, #fbfffa);
+    color: var(--text);
+  }
+  .spotlight-card.primary .spotlight-copy {
+    color: var(--text-muted);
+  }
+  .spotlight-card.accent {
+    background: linear-gradient(145deg, #4caf50, #2f8f56);
+    color: white;
+  }
+  .spotlight-card.accent .spotlight-copy,
+  .spotlight-card.accent .spotlight-kicker {
+    color: rgba(255,255,255,0.82);
+  }
+  .spotlight-card.accent .spotlight-stat {
+    color: white;
+  }
+  .spotlight-kicker {
+    letter-spacing: 0;
+    text-transform: none;
+    opacity: 1;
+    color: var(--text-muted);
+  }
+  .spotlight-title {
+    font-size: 24px;
+  }
+  .meal {
+    border-radius: 24px;
+  }
+  .meal-head {
+    margin-bottom: 12px;
+  }
+  .meal-type {
+    gap: 12px;
+  }
+  .meal-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 18px;
+  }
+  .meal-name {
+    font-size: 20px;
+    margin-bottom: 6px;
+  }
+  .meal-macros {
+    flex-wrap: wrap;
+  }
+  .macro-tag {
+    background: #f3f7f1;
+    color: var(--text-muted);
+  }
+  .macro-tag span {
+    color: var(--text);
+  }
+  .meal-foot {
+    border-top-style: solid;
+  }
+  .goal-option {
+    min-height: 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 18px;
+  }
+  .goal-option-emoji {
+    width: 52px;
+    height: 52px;
+    display: grid;
+    place-items: center;
+    border-radius: 16px;
+    background: #f3f7f1;
+    margin-bottom: 12px;
+  }
+  .goal-option-name {
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+  .goal-option-desc {
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  .stats-shell {
+    display: grid;
+    gap: 16px;
+  }
+  .stats-summary {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 12px;
+  }
+  .stats-card {
+    background: #ffffff;
+    border: 1px solid rgba(190, 202, 185, 0.55);
+    border-radius: 24px;
+    padding: 18px;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.04);
+  }
+  .stats-card.primary {
+    background: linear-gradient(145deg, #ffffff, #f6fcf4);
+  }
+  .stats-card h4 {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+  .stats-big {
+    font-size: 34px;
+    line-height: 1;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+  }
+  .stats-sub {
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.55;
+  }
+  .macro-bars {
+    display: grid;
+    gap: 12px;
+  }
+  .macro-bar-row {
+    background: #f8faf7;
+    border-radius: 18px;
+    padding: 12px;
+  }
+  .macro-bar-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .macro-bar-track {
+    height: 10px;
+    border-radius: 999px;
+    background: #e8eee4;
+    overflow: hidden;
+  }
+  .macro-bar-fill {
+    height: 100%;
+    border-radius: 999px;
+  }
+  .macro-bar-fill.protein { background: #4caf50; }
+  .macro-bar-fill.carb { background: #f26f9d; }
+  .macro-bar-fill.fat { background: #d8363a; }
+  .week-bars {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 8px;
+    height: 170px;
+    margin-top: 10px;
+  }
+  .week-bar-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .week-bar {
+    width: 100%;
+    border-radius: 16px 16px 6px 6px;
+    background: #dfe9da;
+    position: relative;
+    overflow: hidden;
+  }
+  .week-bar-fill {
+    position: absolute;
+    inset: auto 0 0 0;
+    background: linear-gradient(180deg, #78dc77, #4caf50);
+    border-radius: 16px 16px 6px 6px;
+  }
+  .week-bar-col.active .week-bar-fill {
+    background: linear-gradient(180deg, #006e1c, #4caf50);
+  }
+  .week-day {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+  .week-bar-col.active .week-day {
+    color: var(--primary);
+  }
+  .achievement-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .achievement-card {
+    background: #ffffff;
+    border: 1px solid rgba(190, 202, 185, 0.55);
+    border-radius: 20px;
+    padding: 16px;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.03);
+  }
+  .achievement-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    margin-bottom: 10px;
+    font-size: 24px;
+  }
+  .achievement-icon.primary { background: #e6f6df; }
+  .achievement-icon.secondary { background: #ffd9e2; }
+  .achievement-icon.accent { background: #ffdad7; }
+  .achievement-title {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .achievement-copy {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+  .recipe-hero {
+    padding: 26px 22px 22px;
+    background: linear-gradient(145deg, #ffffff, #eff8eb);
+    text-align: left;
+  }
+  .recipe-emoji {
+    width: 64px;
+    height: 64px;
+    border-radius: 20px;
+    display: grid;
+    place-items: center;
+    background: #e6f6df;
+    margin-bottom: 14px;
+  }
+  .recipe-title {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+  }
+  .recipe-meta {
+    margin-top: 8px;
+  }
+  .recipe-ingredients li {
+    align-items: center;
+    padding: 10px 0;
+  }
+  .recipe-ingredients li::before {
+    content: '';
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    border: 1.8px solid var(--primary);
+    background: white;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .recipe-steps li::before {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+
   /* Hidden */
   .hidden { display: none !important; }
 
@@ -898,9 +1247,13 @@
   }
 
   @media (max-width: 390px) {
+    .stats-summary,
+    .spotlight-grid,
+    .achievement-grid {
+      grid-template-columns: 1fr;
+    }
     .goal-main { flex-direction: column; }
     .goal-orb { width: 54px; height: 54px; font-size: 24px; }
-    .spotlight-grid { grid-template-columns: 1fr; }
     .goal-stat { padding: 8px; }
     .nutri-grid { grid-template-columns: repeat(2, 1fr); }
   }
@@ -928,7 +1281,7 @@
   <nav class="tabs">
     <button class="tab active" data-tab="today"><span class="tab-emoji">🍱</span><span>오늘</span></button>
     <button class="tab" data-tab="shopping"><span class="tab-emoji">🛒</span><span>장보기</span></button>
-    <button class="tab" data-tab="history"><span class="tab-emoji">🗂</span><span>기록</span></button>
+    <button class="tab" data-tab="history"><span class="tab-emoji">📈</span><span>통계</span></button>
     <button class="tab" data-tab="profile"><span class="tab-emoji">👤</span><span>프로필</span></button>
   </nav>
 
@@ -939,10 +1292,10 @@
     <div id="today-spotlight-area"></div>
     <div class="section-head">
       <div>
-        <h3>오늘의 플랜</h3>
+        <h3>오늘의 식단</h3>
         <p class="section-note" id="today-note"></p>
       </div>
-      <div class="badge">Curated</div>
+      <div class="badge">Daily Plan</div>
     </div>
     <div id="meal-list-area"></div>
   </section>
@@ -963,10 +1316,10 @@
   <section id="tab-history" class="tab-content hidden">
     <div class="section-head">
       <div>
-        <h3>최근 기록</h3>
-        <p class="section-note">최근 식단 기록을 모아봐요. 비슷한 메뉴가 반복되는지도 쉽게 확인할 수 있어요.</p>
+        <h3>나의 통계</h3>
+        <p class="section-note">일주일 섭취 흐름과 영양소 달성률을 한눈에 확인해보세요.</p>
       </div>
-      <div class="badge">Archive</div>
+      <div class="badge">Insights</div>
     </div>
     <div id="history-area"></div>
   </section>
@@ -1148,32 +1501,77 @@ function goalMood(goalId) {
   };
   return map[goalId] || map.maintain;
 }
+function getTodayTotals() {
+  const meals = state.todayPlan?.date === todayStr() ? (state.todayPlan.meals || []) : [];
+  return meals.reduce((acc, meal) => {
+    acc.calories += meal.calories || 0;
+    acc.protein += meal.protein || 0;
+    acc.carb += meal.carb || 0;
+    acc.fat += meal.fat || 0;
+    return acc;
+  }, { calories: 0, protein: 0, carb: 0, fat: 0 });
+}
+function getWeeklyEntries() {
+  const labels = ['일', '월', '화', '수', '목', '금', '토'];
+  const now = new Date();
+  const result = [];
+  for (let i = 6; i >= 0; i -= 1) {
+    const d = new Date(now);
+    d.setDate(now.getDate() - i);
+    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const entry = state.history.find(h => h.date === key);
+    const calories = entry ? entry.meals.reduce((sum, meal) => sum + (meal.calories || 0), 0) : 0;
+    result.push({
+      key,
+      calories,
+      label: labels[d.getDay()],
+      active: key === todayStr(),
+    });
+  }
+  return result;
+}
+function getStreak() {
+  if (!state.history.length) return 0;
+  const dates = new Set(state.history.map(h => h.date));
+  let streak = 0;
+  const cursor = new Date();
+  while (true) {
+    const key = `${cursor.getFullYear()}-${String(cursor.getMonth()+1).padStart(2,'0')}-${String(cursor.getDate()).padStart(2,'0')}`;
+    if (!dates.has(key)) break;
+    streak += 1;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+  return streak;
+}
 function renderTodaySpotlight() {
   const target = $('#today-spotlight-area');
   const goal = currentGoal();
   const { total, done } = shoppingProgress();
-  const cal = calcTargetCalories();
-  const styleText = state.profile.style || '간단한 집밥 · 한식 위주';
-  const checklist = total ? `${done}/${total}` : '0/0';
-  const checklistCopy = total ? '장보기 진행 중' : '식단 생성 후 자동 준비';
+  const targetCal = calcTargetCalories();
+  const totals = getTodayTotals();
+  const remaining = targetCal ? Math.max(targetCal - totals.calories, 0) : 0;
+  const styleText = state.profile.style || '균형 잡힌 집밥 중심';
+  const checklist = total ? `${done}/${total}` : '준비 전';
+  const checklistCopy = total ? '장보기 체크 진행도' : '식단 생성 후 자동 준비';
 
   target.innerHTML = `
     <div class="spotlight-grid">
       <div class="spotlight-card primary">
-        <div class="spotlight-kicker">Today Focus</div>
-        <div class="spotlight-title">${goal.emoji} ${goal.name}</div>
-        <div class="spotlight-copy">${goalMood(goal.id)}</div>
+        <div class="spotlight-kicker">오늘의 요약</div>
+        <div class="spotlight-title">${totals.calories || 0} kcal</div>
+        <div class="spotlight-copy">${goal.emoji} ${goal.name} 기준으로 ${targetCal ? `${Math.min(Math.round((totals.calories / targetCal) * 100), 100)}%` : '0%'} 진행 중이에요.</div>
       </div>
       <div class="spotlight-row">
         <div class="spotlight-card accent">
-          <div class="spotlight-kicker">Target</div>
-          <div class="spotlight-stat">${cal ? `${cal}` : '--'}</div>
-          <div class="spotlight-copy">오늘 기준 권장 kcal</div>
+          <div class="spotlight-kicker">남은 칼로리</div>
+          <div class="spotlight-stat">${targetCal ? `${remaining}` : '--'}</div>
+          <div class="spotlight-copy">${targetCal ? `목표 ${targetCal} kcal 기준` : '프로필 저장 후 자동 계산'}</div>
         </div>
         <div class="spotlight-card">
-          <div class="spotlight-kicker">Taste Profile</div>
-          <div class="spotlight-copy">${styleText}</div>
-          <div class="spotlight-copy" style="margin-top:10px;"><strong style="color:var(--text);">${checklist}</strong> · ${checklistCopy}</div>
+          <div class="spotlight-kicker">오늘의 포인트</div>
+          <div class="spotlight-copy">${goalMood(goal.id)}</div>
+          <div class="spotlight-copy" style="margin-top:10px;"><strong style="color:var(--text);">${styleText}</strong></div>
+          <div class="spotlight-copy" style="margin-top:8px;"><strong style="color:var(--text);">${checklist}</strong> · ${checklistCopy}</div>
         </div>
       </div>
     </div>
@@ -1275,6 +1673,7 @@ function renderGoalBanner() {
   const area = $('#goal-banner-area');
   const goal = currentGoal();
   const cal = calcTargetCalories();
+  const today = getTodayTotals();
   if (!cal) {
     area.innerHTML = `
       <div class="card">
@@ -1294,7 +1693,7 @@ function renderGoalBanner() {
         <div>
           <div class="goal-label">Daily Nutrition Mix</div>
           <div class="goal-name">${cal} kcal</div>
-          <div class="goal-copy">${goal.emoji} ${goal.name}에 맞춰 단백질, 탄수화물, 지방 비율을 오늘 하루 기준으로 부드럽게 맞춰드려요.</div>
+          <div class="goal-copy">${goal.emoji} ${goal.name} 기준 권장 섭취량이에요. 현재 섭취량은 ${today.calories || 0} kcal 입니다.</div>
         </div>
         <div class="goal-orb">${goal.emoji}</div>
       </div>
@@ -1462,27 +1861,81 @@ function renderHistory() {
     area.innerHTML = `
       <div class="empty">
         <div class="empty-emoji">📝</div>
-        <p>아직 기록이 없어요<br />매일 받은 식단이 자동으로<br />기록에 남아요</p>
+        <p>아직 통계를 만들 기록이 없어요<br />오늘의 식단을 받으면<br />자동으로 데이터가 쌓여요</p>
       </div>
     `;
     return;
   }
-  area.innerHTML = state.history.slice().reverse().map(h => {
-    const totalCal = h.meals.reduce((s,m) => s + (m.calories||0), 0);
-    const totalP = h.meals.reduce((s,m) => s + (m.protein||0), 0);
-    return `
-      <div class="history-item">
-        <div class="history-date">${h.date} · ${h.goalName || ''}</div>
-        <div class="history-meals">
-          ${h.meals.map(m => `<div class="history-pill">${m.name}</div>`).join('')}
+  const week = getWeeklyEntries();
+  const maxCal = Math.max(...week.map(item => item.calories), 1);
+  const targetCal = calcTargetCalories();
+  const macros = targetCal ? calcMacros(targetCal) : { protein: 120, carb: 250, fat: 65 };
+  const today = getTodayTotals();
+  const streak = getStreak();
+  const avg = Math.round(week.reduce((sum, item) => sum + item.calories, 0) / week.length);
+  const entries = state.history.length;
+
+  area.innerHTML = `
+    <div class="stats-shell">
+      <div class="stats-summary">
+        <div class="stats-card primary">
+          <h4>주간 평균 섭취</h4>
+          <div class="stats-big">${avg || 0} kcal</div>
+          <div class="stats-sub">${streak}일 연속 기록 중 · 총 ${entries}개의 일일 기록이 쌓였어요.</div>
+          <div class="week-bars">
+            ${week.map(item => `
+              <div class="week-bar-col ${item.active ? 'active' : ''}">
+                <div class="week-bar" style="height:${Math.max(28, Math.round((item.calories / maxCal) * 120))}px;">
+                  <div class="week-bar-fill" style="height:${item.calories ? Math.max(16, Math.round((item.calories / maxCal) * 100)) : 0}%;"></div>
+                </div>
+                <div class="week-day">${item.label}</div>
+              </div>
+            `).join('')}
+          </div>
         </div>
-        <div class="history-stats">
-          <span>총 ${totalCal} kcal</span>
-          <span>단백질 ${totalP}g</span>
+        <div class="stats-card">
+          <h4>오늘의 영양소 현황</h4>
+          <div class="macro-bars">
+            <div class="macro-bar-row">
+              <div class="macro-bar-head"><span>단백질</span><span>${today.protein}g / ${macros.protein}g</span></div>
+              <div class="macro-bar-track"><div class="macro-bar-fill protein" style="width:${Math.min(100, Math.round((today.protein / Math.max(macros.protein, 1)) * 100))}%;"></div></div>
+            </div>
+            <div class="macro-bar-row">
+              <div class="macro-bar-head"><span>탄수화물</span><span>${today.carb}g / ${macros.carb}g</span></div>
+              <div class="macro-bar-track"><div class="macro-bar-fill carb" style="width:${Math.min(100, Math.round((today.carb / Math.max(macros.carb, 1)) * 100))}%;"></div></div>
+            </div>
+            <div class="macro-bar-row">
+              <div class="macro-bar-head"><span>지방</span><span>${today.fat}g / ${macros.fat}g</span></div>
+              <div class="macro-bar-track"><div class="macro-bar-fill fat" style="width:${Math.min(100, Math.round((today.fat / Math.max(macros.fat, 1)) * 100))}%;"></div></div>
+            </div>
+          </div>
         </div>
       </div>
-    `;
-  }).join('');
+
+      <div class="achievement-grid">
+        <div class="achievement-card">
+          <div class="achievement-icon primary">🔥</div>
+          <div class="achievement-title">${streak}일 연속 기록</div>
+          <div class="achievement-copy">하루도 빼지 않고 기록할수록 추천 정확도가 더 좋아져요.</div>
+        </div>
+        <div class="achievement-card">
+          <div class="achievement-icon secondary">💪</div>
+          <div class="achievement-title">${state.goal === 'bulkup' ? '벌크업 집중' : '목표 유지 중'}</div>
+          <div class="achievement-copy">${currentGoal().name} 기준으로 최근 식단이 누적되고 있어요.</div>
+        </div>
+        <div class="achievement-card">
+          <div class="achievement-icon accent">🛒</div>
+          <div class="achievement-title">${state.shoppingList.length}개 장보기 항목</div>
+          <div class="achievement-copy">식단이 바뀌면 필요한 재료도 자동으로 새로 정리해드려요.</div>
+        </div>
+        <div class="achievement-card">
+          <div class="achievement-icon primary">🥗</div>
+          <div class="achievement-title">${entries}일치 식단 데이터</div>
+          <div class="achievement-copy">최근 기록을 기반으로 중복 메뉴를 줄이고 취향을 더 잘 반영해요.</div>
+        </div>
+      </div>
+    </div>
+  `;
 }
 
 function renderGoalGrid() {
