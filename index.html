@@ -7,7 +7,7 @@
 
 <!-- PWA -->
 <link rel="manifest" href="manifest.json" />
-<meta name="theme-color" content="#4A85C9" />
+<meta name="theme-color" content="#FF8E9E" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="오늘 뭐먹지" />
@@ -15,33 +15,36 @@
 <meta name="description" content="AI가 매일 맞춤 식단을 추천해주는 나만의 영양사" />
 
 <!-- Icons (SVG data URL inline for simplicity) -->
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%236FA8E6'/%3E%3Cstop offset='100%25' stop-color='%234A85C9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='22' fill='url(%23g)'/%3E%3Ctext x='50' y='68' font-size='56' text-anchor='middle'%3E🥗%3C/text%3E%3C/svg%3E" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23FF9DB0'/%3E%3Cstop offset='100%25' stop-color='%23FFB987'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='22' fill='url(%23g)'/%3E%3Ctext x='50' y='68' font-size='56' text-anchor='middle'%3E🥗%3C/text%3E%3C/svg%3E" />
 <link rel="apple-touch-icon" href="icon-192.png" />
 
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
 <style>
   :root {
-    --bg: #F5F8FC;
-    --bg-soft: #EAF1FA;
+    --bg: #FFF9F5;
+    --bg-soft: #FFF0E8;
     --surface: #FFFFFF;
-    --primary: #6FA8E6;
-    --primary-deep: #4A85C9;
-    --primary-soft: #DCE9F7;
-    --accent: #FFB7A0;
-    --accent-soft: #FFE2D6;
-    --text: #1B2A3B;
-    --text-muted: #6A7A8C;
-    --text-light: #9AA8B8;
-    --border: #E3EBF4;
-    --success: #7BC4A4;
-    --warning: #F5C26B;
-    --danger: #E88B8B;
-    --radius-sm: 10px;
-    --radius: 16px;
-    --radius-lg: 24px;
-    --shadow-sm: 0 2px 8px rgba(74, 133, 201, 0.06);
-    --shadow: 0 8px 24px rgba(74, 133, 201, 0.08);
-    --shadow-lg: 0 20px 50px rgba(74, 133, 201, 0.12);
+    --surface-soft: rgba(255, 255, 255, 0.72);
+    --primary: #FF8E9E;
+    --primary-deep: #F56E83;
+    --primary-soft: #FFE3E7;
+    --accent: #FFB86B;
+    --accent-soft: #FFF1D8;
+    --secondary: #9AD8C2;
+    --secondary-soft: #E2F6EE;
+    --text: #332539;
+    --text-muted: #7D6E82;
+    --text-light: #A89AAE;
+    --border: #F4DDE2;
+    --success: #6DBD97;
+    --warning: #F1B964;
+    --danger: #E68383;
+    --radius-sm: 12px;
+    --radius: 20px;
+    --radius-lg: 30px;
+    --shadow-sm: 0 10px 24px rgba(224, 129, 151, 0.10);
+    --shadow: 0 18px 36px rgba(224, 129, 151, 0.12);
+    --shadow-lg: 0 26px 54px rgba(224, 129, 151, 0.18);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -55,18 +58,26 @@
   body {
     min-height: 100vh;
     background:
-      radial-gradient(circle at 0% 0%, #E0EBF8 0%, transparent 40%),
-      radial-gradient(circle at 100% 100%, #FFE8DD 0%, transparent 45%),
+      radial-gradient(circle at 0% 0%, rgba(255, 214, 221, 0.9) 0%, transparent 34%),
+      radial-gradient(circle at 100% 0%, rgba(255, 238, 199, 0.85) 0%, transparent 28%),
+      radial-gradient(circle at 100% 100%, rgba(225, 245, 235, 0.85) 0%, transparent 34%),
       var(--bg);
   }
   button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
   input, select, textarea { font-family: inherit; font-size: inherit; color: inherit; }
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 3px solid rgba(245, 110, 131, 0.22);
+    outline-offset: 2px;
+  }
 
   .app {
     max-width: 480px;
     margin: 0 auto;
     min-height: 100vh;
-    padding: 20px 18px 100px;
+    padding: 20px 18px calc(118px + env(safe-area-inset-bottom));
     position: relative;
   }
 
@@ -75,25 +86,25 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 22px;
+    margin-bottom: 18px;
   }
   .logo {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
   }
   .logo-icon {
-    width: 36px; height: 36px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, var(--primary), var(--primary-deep));
+    width: 42px; height: 42px;
+    border-radius: 15px;
+    background: linear-gradient(135deg, #FF9DB0, #FFB987);
     display: grid; place-items: center;
-    color: white; font-weight: 700; font-size: 18px;
-    box-shadow: var(--shadow-sm);
+    color: white; font-weight: 700; font-size: 20px;
+    box-shadow: 0 12px 24px rgba(245, 110, 131, 0.24);
   }
   .logo-text {
     font-weight: 700;
-    font-size: 17px;
-    letter-spacing: -0.3px;
+    font-size: 18px;
+    letter-spacing: -0.45px;
   }
   .logo-text small {
     display: block;
@@ -104,8 +115,10 @@
   }
   .icon-btn {
     width: 40px; height: 40px;
-    border-radius: 12px;
-    background: var(--surface);
+    border-radius: 14px;
+    background: rgba(255,255,255,0.78);
+    border: 1px solid rgba(255,255,255,0.78);
+    backdrop-filter: blur(14px);
     display: grid; place-items: center;
     box-shadow: var(--shadow-sm);
     transition: transform 0.15s;
@@ -113,55 +126,89 @@
   .icon-btn:active { transform: scale(0.92); }
   .icon-btn svg { width: 18px; height: 18px; stroke: var(--text); }
 
+  .status-strip {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 12px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.74);
+    border: 1px solid rgba(255,255,255,0.86);
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 600;
+    box-shadow: var(--shadow-sm);
+    backdrop-filter: blur(14px);
+  }
+  .status-pill strong {
+    color: var(--text);
+    font-weight: 700;
+  }
+
   /* Greeting */
   .greeting {
-    margin-bottom: 18px;
+    margin-bottom: 20px;
   }
   .greeting h1 {
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    line-height: 1.3;
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.8px;
+    line-height: 1.22;
   }
   .greeting p {
     color: var(--text-muted);
     font-size: 13px;
-    margin-top: 4px;
+    margin-top: 6px;
   }
 
   /* Tabs */
   .tabs {
     display: flex;
-    background: var(--surface);
-    border-radius: var(--radius);
-    padding: 5px;
+    background: rgba(255,255,255,0.76);
+    border-radius: 22px;
+    padding: 6px;
     margin-bottom: 18px;
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(255,255,255,0.88);
+    backdrop-filter: blur(16px);
     position: sticky;
     top: 12px;
     z-index: 50;
   }
   .tab {
     flex: 1;
-    padding: 10px;
-    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 11px 8px;
+    font-size: 12px;
     font-weight: 600;
-    border-radius: 12px;
+    border-radius: 16px;
     color: var(--text-muted);
     transition: all 0.2s;
   }
+  .tab-emoji { font-size: 14px; }
   .tab.active {
-    background: linear-gradient(135deg, var(--primary), var(--primary-deep));
+    background: linear-gradient(135deg, #FF9FB0, #F77C93);
     color: white;
-    box-shadow: 0 4px 12px rgba(74, 133, 201, 0.3);
+    box-shadow: 0 10px 18px rgba(245, 110, 131, 0.28);
   }
 
   /* Card */
   .card {
-    background: var(--surface);
+    background: rgba(255,255,255,0.88);
     border-radius: var(--radius);
     padding: 18px;
     box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(255,255,255,0.92);
+    backdrop-filter: blur(14px);
     margin-bottom: 14px;
   }
   .card-title {
@@ -180,19 +227,28 @@
     background: var(--primary-soft);
     color: var(--primary-deep);
     padding: 3px 8px;
-    border-radius: 8px;
+    border-radius: 999px;
     font-weight: 600;
+  }
+
+  .section-note {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-top: -2px;
+    margin-bottom: 14px;
   }
 
   /* Goal banner */
   .goal-banner {
-    background: linear-gradient(135deg, #5891D8 0%, #4A85C9 100%);
+    background: linear-gradient(135deg, #FF93A8 0%, #FFB17E 100%);
     color: white;
-    border-radius: var(--radius);
-    padding: 18px;
+    border-radius: 28px;
+    padding: 20px;
     margin-bottom: 16px;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 24px 38px rgba(245, 110, 131, 0.24);
   }
   .goal-banner::before {
     content: '';
@@ -218,10 +274,10 @@
     z-index: 1;
   }
   .goal-name {
-    font-size: 20px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    margin-bottom: 12px;
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.8px;
+    margin-bottom: 14px;
     position: relative;
     z-index: 1;
   }
@@ -234,7 +290,7 @@
   .goal-stat {
     flex: 1;
     background: rgba(255,255,255,0.15);
-    border-radius: 10px;
+    border-radius: 14px;
     padding: 8px 10px;
     backdrop-filter: blur(10px);
   }
@@ -251,14 +307,16 @@
 
   /* Meal */
   .meal {
-    background: var(--surface);
-    border-radius: var(--radius);
+    background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(255,255,255,0.88));
+    border-radius: 22px;
     padding: 16px;
     margin-bottom: 12px;
     box-shadow: var(--shadow-sm);
-    transition: transform 0.15s;
+    border: 1px solid rgba(255,255,255,0.95);
+    transition: transform 0.15s, box-shadow 0.15s;
   }
   .meal:active { transform: scale(0.98); }
+  .meal:hover { box-shadow: var(--shadow); }
   .meal-head {
     display: flex;
     justify-content: space-between;
@@ -271,15 +329,16 @@
     gap: 8px;
   }
   .meal-icon {
-    width: 36px; height: 36px;
-    border-radius: 10px;
+    width: 42px; height: 42px;
+    border-radius: 14px;
     display: grid; place-items: center;
-    font-size: 18px;
+    font-size: 20px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.65);
   }
-  .meal-icon.breakfast { background: #FFF4E0; }
-  .meal-icon.lunch { background: #E3F2DC; }
-  .meal-icon.dinner { background: #E8E4F8; }
-  .meal-icon.snack { background: #FCE4EC; }
+  .meal-icon.breakfast { background: #FFF0D9; }
+  .meal-icon.lunch { background: #DDF5EA; }
+  .meal-icon.dinner { background: #EFE7FF; }
+  .meal-icon.snack { background: #FFE6EF; }
   .meal-time {
     font-size: 11px;
     color: var(--text-muted);
@@ -294,8 +353,8 @@
     text-align: right;
   }
   .meal-cal-num {
-    font-size: 16px;
-    font-weight: 700;
+    font-size: 18px;
+    font-weight: 800;
     color: var(--primary-deep);
   }
   .meal-cal-unit {
@@ -303,9 +362,9 @@
     color: var(--text-muted);
   }
   .meal-name {
-    font-size: 16px;
-    font-weight: 700;
-    letter-spacing: -0.3px;
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: -0.4px;
     margin-bottom: 4px;
   }
   .meal-desc {
@@ -320,13 +379,27 @@
   }
   .macro-tag {
     font-size: 11px;
-    padding: 4px 8px;
-    border-radius: 8px;
+    padding: 5px 9px;
+    border-radius: 999px;
     font-weight: 600;
     background: var(--bg-soft);
     color: var(--text-muted);
   }
   .macro-tag span { color: var(--text); }
+  .meal-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--border);
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .meal-foot strong {
+    color: var(--primary-deep);
+    font-weight: 700;
+  }
 
   /* Buttons */
   .btn {
@@ -343,12 +416,12 @@
   }
   .btn:active { transform: scale(0.97); }
   .btn-primary {
-    background: linear-gradient(135deg, var(--primary), var(--primary-deep));
+    background: linear-gradient(135deg, #FF98AB, #F56E83);
     color: white;
-    box-shadow: 0 4px 14px rgba(74, 133, 201, 0.3);
+    box-shadow: 0 14px 24px rgba(245, 110, 131, 0.26);
   }
   .btn-secondary {
-    background: var(--surface);
+    background: rgba(255,255,255,0.92);
     color: var(--primary-deep);
     box-shadow: var(--shadow-sm);
   }
@@ -357,7 +430,7 @@
     color: var(--text);
   }
   .btn-accent {
-    background: linear-gradient(135deg, var(--accent), #FF9978);
+    background: linear-gradient(135deg, var(--accent), #FFA36C);
     color: white;
     box-shadow: 0 4px 14px rgba(255, 153, 120, 0.35);
   }
@@ -372,8 +445,8 @@
     margin-bottom: 16px;
   }
   .goal-option {
-    background: var(--surface);
-    border: 2px solid transparent;
+    background: rgba(255,255,255,0.9);
+    border: 1.5px solid rgba(255,255,255,0.9);
     border-radius: var(--radius);
     padding: 14px;
     text-align: left;
@@ -381,8 +454,9 @@
     box-shadow: var(--shadow-sm);
   }
   .goal-option.active {
-    border-color: var(--primary);
-    background: var(--primary-soft);
+    border-color: rgba(245, 110, 131, 0.35);
+    background: linear-gradient(180deg, #FFF6F8, #FFE8ED);
+    transform: translateY(-1px);
   }
   .goal-option-emoji {
     font-size: 24px;
@@ -413,14 +487,15 @@
     width: 100%;
     padding: 12px 14px;
     border: 1.5px solid var(--border);
-    border-radius: 12px;
-    background: var(--surface);
+    border-radius: 14px;
+    background: rgba(255,255,255,0.88);
     font-size: 14px;
-    transition: border-color 0.15s;
+    transition: border-color 0.15s, box-shadow 0.15s;
   }
   .form-input:focus, .form-select:focus, .form-textarea:focus {
     outline: none;
     border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(245, 110, 131, 0.08);
   }
   .form-textarea { resize: none; min-height: 70px; }
   .form-row {
@@ -446,10 +521,11 @@
     align-items: center;
     gap: 12px;
     padding: 10px 14px;
-    background: var(--surface);
+    background: rgba(255,255,255,0.9);
     border-radius: 12px;
     margin-bottom: 6px;
     box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(255,255,255,0.92);
     cursor: pointer;
     transition: all 0.15s;
   }
@@ -529,7 +605,7 @@
   }
   .modal-close svg { width: 14px; height: 14px; }
   .recipe-hero {
-    background: linear-gradient(135deg, var(--primary-soft), #F5E8DF);
+    background: linear-gradient(135deg, #FFE7ED, #FFF2DE);
     border-radius: var(--radius);
     padding: 20px;
     margin-bottom: 14px;
@@ -539,10 +615,11 @@
   .recipe-title { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 4px; }
   .recipe-meta { font-size: 12px; color: var(--text-muted); }
   .recipe-section {
-    background: var(--surface);
+    background: rgba(255,255,255,0.92);
     border-radius: var(--radius);
     padding: 16px;
     margin-bottom: 12px;
+    border: 1px solid rgba(255,255,255,0.95);
   }
   .recipe-section h4 {
     font-size: 13px;
@@ -603,11 +680,12 @@
 
   /* History */
   .history-item {
-    background: var(--surface);
+    background: rgba(255,255,255,0.9);
     border-radius: var(--radius);
     padding: 14px;
     margin-bottom: 10px;
     box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(255,255,255,0.95);
   }
   .history-date {
     font-size: 12px;
@@ -640,8 +718,11 @@
   /* Empty state */
   .empty {
     text-align: center;
-    padding: 40px 20px;
+    padding: 38px 20px;
     color: var(--text-muted);
+    background: rgba(255,255,255,0.7);
+    border-radius: 24px;
+    border: 1px dashed rgba(245, 110, 131, 0.24);
   }
   .empty-emoji { font-size: 48px; margin-bottom: 12px; }
   .empty p { font-size: 13px; line-height: 1.6; }
@@ -692,11 +773,12 @@
 
   /* API key prompt */
   .api-prompt {
-    background: linear-gradient(135deg, #FFF4E0 0%, #FFE2D6 100%);
-    border-radius: var(--radius);
+    background: linear-gradient(135deg, #FFF3D8 0%, #FFE3E8 100%);
+    border-radius: 24px;
     padding: 16px;
     margin-bottom: 14px;
-    border: 1px solid #FCD9B6;
+    border: 1px solid #F7D4C6;
+    box-shadow: var(--shadow-sm);
   }
   .api-prompt-title {
     font-size: 13px;
@@ -719,7 +801,7 @@
   /* Floating action */
   .fab {
     position: fixed;
-    bottom: 24px;
+    bottom: calc(22px + env(safe-area-inset-bottom));
     left: 50%;
     transform: translateX(-50%);
     max-width: 444px;
@@ -747,6 +829,14 @@
     from { opacity: 0; transform: translateY(12px); }
     to { opacity: 1; transform: translateY(0); }
   }
+
+  @media (max-width: 390px) {
+    .greeting h1 { font-size: 23px; }
+    .tab { font-size: 11px; }
+    .goal-stats { gap: 8px; }
+    .goal-stat { padding: 8px; }
+    .nutri-grid { grid-template-columns: repeat(2, 1fr); }
+  }
 </style>
 </head>
 <body>
@@ -768,32 +858,37 @@
     </button>
   </header>
 
+  <div class="status-strip" id="status-strip"></div>
+
   <div class="greeting">
     <h1 id="greeting-text">오늘도 잘 챙겨먹어요</h1>
     <p id="greeting-sub">목표에 맞춰 식단을 준비해드릴게요</p>
   </div>
 
   <nav class="tabs">
-    <button class="tab active" data-tab="today">오늘</button>
-    <button class="tab" data-tab="shopping">장보기</button>
-    <button class="tab" data-tab="history">기록</button>
-    <button class="tab" data-tab="goal">목표</button>
+    <button class="tab active" data-tab="today"><span class="tab-emoji">🍱</span><span>오늘</span></button>
+    <button class="tab" data-tab="shopping"><span class="tab-emoji">🛒</span><span>장보기</span></button>
+    <button class="tab" data-tab="history"><span class="tab-emoji">🗂</span><span>기록</span></button>
+    <button class="tab" data-tab="goal"><span class="tab-emoji">🎯</span><span>목표</span></button>
   </nav>
 
   <!-- TAB: TODAY -->
   <section id="tab-today" class="tab-content">
     <div id="api-prompt-area"></div>
     <div id="goal-banner-area"></div>
+    <div class="section-note" id="today-note"></div>
     <div id="meal-list-area"></div>
   </section>
 
   <!-- TAB: SHOPPING -->
   <section id="tab-shopping" class="tab-content hidden">
+    <div class="section-note">식단에서 뽑은 재료를 카테고리별로 정리했어요. 장 본 재료는 탭해서 체크할 수 있어요.</div>
     <div id="shopping-list-area"></div>
   </section>
 
   <!-- TAB: HISTORY -->
   <section id="tab-history" class="tab-content hidden">
+    <div class="section-note">최근 식단 기록을 모아봐요. 비슷한 메뉴가 반복되는지도 쉽게 확인할 수 있어요.</div>
     <div id="history-area"></div>
   </section>
 
@@ -908,6 +1003,7 @@ const state = {
   todayPlan: null,
   shoppingList: [],
   history: [],
+  activeTab: 'today',
 };
 
 const GOALS = [
@@ -950,13 +1046,67 @@ function todayLabel() {
   const d = new Date();
   return `${d.getMonth()+1}월 ${d.getDate()}일 ${days[d.getDay()]}요일`;
 }
+function hasProfile() {
+  const { age, gender, height, weight } = state.profile;
+  return !!(age && gender && height && weight);
+}
+function shoppingProgress() {
+  const total = state.shoppingList.length;
+  const done = state.shoppingList.filter(item => item.done).length;
+  return { total, done };
+}
+function renderStatusStrip() {
+  const target = $('#status-strip');
+  const { total, done } = shoppingProgress();
+  const hasPlan = state.todayPlan && state.todayPlan.date === todayStr();
+  target.innerHTML = `
+    <div class="status-pill">🌼 <strong>${hasProfile() ? '프로필 완료' : '프로필 필요'}</strong></div>
+    <div class="status-pill">🍽 <strong>${hasPlan ? '오늘 식단 준비됨' : '오늘 식단 없음'}</strong></div>
+    <div class="status-pill">🛍 <strong>${total ? `${done}/${total} 체크` : '목록 대기중'}</strong></div>
+  `;
+}
+function renderTodayNote() {
+  const note = $('#today-note');
+  const hasPlan = state.todayPlan && state.todayPlan.date === todayStr();
+  if (!state.apiKey) {
+    note.textContent = 'API 키만 등록하면 오늘 컨디션에 맞는 식단을 바로 추천받을 수 있어요.';
+  } else if (!hasProfile()) {
+    note.textContent = '기본 정보를 입력하면 칼로리와 영양 비율을 더 정확하게 맞춰드릴게요.';
+  } else if (!hasPlan) {
+    note.textContent = '오늘 목표와 영양 비율을 반영해서, 부담 없는 한식 위주의 식단도 추천할 수 있어요.';
+  } else {
+    note.textContent = '카드를 눌러 레시피와 재료를 보고, 마음에 들지 않으면 새 식단으로 다시 추천받아보세요.';
+  }
+}
+function renderCurrentTab() {
+  renderStatusStrip();
+  if (state.activeTab === 'today') {
+    renderApiPrompt();
+    renderGoalBanner();
+    renderTodayNote();
+    renderMeals();
+  }
+  if (state.activeTab === 'shopping') {
+    renderShopping();
+    $('#fab').innerHTML = '';
+  }
+  if (state.activeTab === 'history') {
+    renderHistory();
+    $('#fab').innerHTML = '';
+  }
+  if (state.activeTab === 'goal') {
+    renderGoalGrid();
+    renderProfile();
+    $('#fab').innerHTML = '';
+  }
+}
 
 // ============================================================
 // Calorie target calculation (Mifflin-St Jeor)
 // ============================================================
 function calcTargetCalories() {
   const { age, gender, height, weight, activity } = state.profile;
-  if (!age || !height || !weight) return null;
+  if (!age || !gender || !height || !weight) return null;
 
   let bmr;
   if (gender === 'female') {
@@ -1063,6 +1213,7 @@ function renderGoalBanner() {
 function renderMeals() {
   const area = $('#meal-list-area');
   const cal = calcTargetCalories();
+  renderTodayNote();
 
   if (!state.apiKey) {
     area.innerHTML = '';
@@ -1116,6 +1267,10 @@ function renderMeals() {
           <div class="macro-tag">P <span>${m.protein}g</span></div>
           <div class="macro-tag">C <span>${m.carb}g</span></div>
           <div class="macro-tag">F <span>${m.fat}g</span></div>
+        </div>
+        <div class="meal-foot">
+          <span>조리 ${m.cookTime || 15}분 · ${m.servings || 1}인분</span>
+          <strong>레시피 보기</strong>
         </div>
       </div>
     `;
@@ -1184,6 +1339,7 @@ function renderShopping() {
 function toggleShopItem(idx) {
   state.shoppingList[idx].done = !state.shoppingList[idx].done;
   save();
+  renderStatusStrip();
   renderShopping();
 }
 
@@ -1191,6 +1347,7 @@ function clearShopping() {
   if (confirm('장보기 목록을 모두 비울까요?')) {
     state.shoppingList = [];
     save();
+    renderStatusStrip();
     renderShopping();
   }
 }
@@ -1249,14 +1406,11 @@ function renderProfile() {
 // Tabs
 // ============================================================
 function switchTab(name) {
+  state.activeTab = name;
   $$('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
   $$('.tab-content').forEach(c => c.classList.add('hidden'));
   $(`#tab-${name}`).classList.remove('hidden');
-
-  if (name === 'today') { renderApiPrompt(); renderGoalBanner(); renderMeals(); }
-  if (name === 'shopping') { renderShopping(); $('#fab').innerHTML = ''; }
-  if (name === 'history')  { renderHistory(); $('#fab').innerHTML = ''; }
-  if (name === 'goal')     { renderGoalGrid(); renderProfile(); $('#fab').innerHTML = ''; }
+  renderCurrentTab();
 }
 
 $$('.tab').forEach(tab => {
@@ -1269,7 +1423,7 @@ $$('.tab').forEach(tab => {
 function selectGoal(id) {
   state.goal = id;
   save();
-  renderGoalGrid();
+  renderCurrentTab();
   toast('목표가 변경되었어요');
 }
 
@@ -1284,6 +1438,7 @@ function saveProfile() {
     style: $('#profile-style').value,
   };
   save();
+  renderCurrentTab();
   toast('저장됐어요');
 }
 
@@ -1301,7 +1456,7 @@ function saveApiKey() {
   save();
   toast('API 키가 저장됐어요 ✨');
   closeModal('modal-settings');
-  renderApiPrompt();
+  renderCurrentTab();
 }
 function clearData() {
   if (confirm('모든 데이터를 삭제할까요? (API 키, 목표, 기록 전부)')) {
@@ -1551,6 +1706,7 @@ ${recent || '없음'}
 
     save();
     renderMeals();
+    renderStatusStrip();
     toast('오늘의 식단이 준비됐어요 ✨');
 
   } catch (err) {
@@ -1594,10 +1750,9 @@ function rebuildShoppingList(meals) {
 // Init
 // ============================================================
 load();
+state.activeTab = 'today';
 renderGreeting();
-renderApiPrompt();
-renderGoalBanner();
-renderMeals();
+switchTab('today');
 
 // ============================================================
 // Service Worker registration (PWA)
